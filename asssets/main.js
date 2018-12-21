@@ -11,7 +11,7 @@ var config = {
 
   var trainDatabase = firebase.database();
 
-  $("#add-train-btn").on("click", function(){
+  $("#add-train-button").on("click", function(){
 
     var trainName = $("#train-name-input").val().trim();
     var destination = $("#destination-input").val().trim();
@@ -24,5 +24,7 @@ var config = {
         trainTime: trainTime,
         frequency: frequency
     };
+
+    trainDatabase.ref().push(newTrainAdded);
 
   })
