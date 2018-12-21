@@ -27,4 +27,20 @@ var config = {
 
     trainDatabase.ref().push(newTrainAdded);
 
-  })
+console.log(trainName) ;
+console.log(destination);
+console.log(trainTime);
+console.log(frequency);
+
+alert("Your Train has been added");
+
+$(trainName).val("");
+$(destination).val("");
+$(trainTime).val("");
+$(frequency).val("");
+
+return false;
+});
+
+
+  
