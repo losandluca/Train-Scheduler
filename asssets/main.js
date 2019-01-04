@@ -27,20 +27,57 @@ var config = {
 
     trainDatabase.ref().push(newTrainAdded);
 
-console.log(trainName) ;
-console.log(destination);
-console.log(trainTime);
-console.log(frequency);
+    console.log(trainName) ;
+    console.log(destination);
+    console.log(trainTime);
+    console.log(frequency);
 
-alert("Your Train has been added");
+    alert("Your Train has been added");
 
-$(trainName).val("");
-$(destination).val("");
-$(trainTime).val("");
-$(frequency).val("");
+    $("#train-name-input").val("");
+    $("#destination-input").val("");
+    $("#train-time-input").val("");
+    $("#frequency-input").val("");
 
-return false;
+    return false;
 });
 
+trainDatabase.ref().on("child_added", function(childSnapshot, prevChildKey) {
+    console.log(childSnapshot.val());
 
+    var tableName = childSnapshot.val().name;
+    var tableDestination = childSnapshot.val().destination;
+    var tableFrequency = childSnapshot.val().frequency;
+    var tableTrainTime = childSnapshot.val().trainTime;
+    if(tableTrainTime === "") {
+       console.log("Invalid Input");
+       return;
+    }
+
+    var arrivalTime  = tableTrainTime.split(":");
+    var trainTime = moment().hours(arrivalTime[0]).minutes(arrivalTime[1]);
+    var maxMoment = moment.max(moment(), trainTime);
+    var trainMinutes;
+    var trainArrival;
+
+    console.log("Train Time Message",trainTime);
+    if(maxMoment === trainTime) {
+        trainArrival = trainTime.format("hh:mm A");
+        trainMinutes = trainTime.diff(moment(), "minutes");
+    } else {
+        var timeDifference = moment().diff(trainTime, "minutes");
+        var trainReminder = timeDifference % tableFrequency;
+        trainMinutes = tableFrequency - trainReminder;
+
+        trainArrival = moment().add(trainMinutes, "m").format("hh:mm A");
+    }
+
+    console.log("trainMinutes:", trainMinutes);
+    console.log("trainArrival:", trainArrival);
+
+    $("#train-table > tbody").append("<tr><td>" + tableName + 
+    "</td><td>" + tableDestination + "</td><td>" + tableFrequency +
+    tableFrequency + "</td><td>" + trainArrival + "</td><td>" +trainMinutes +
+    "</td><tr>");
+});
   
